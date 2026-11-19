@@ -1,0 +1,44 @@
+<div class="loading">
+  @if (engines.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (loadError(); as message) {
+<p class="error" role="alert" data-testid="load-error">{{ message }}</p>
+}
+
+<p class="info" role="note" data-testid="databases-info">
+  Sin base de datos de desarrollo, el proyecto guarda los datos solo en la memoria (RAM) mientras se ejecuta: no hay
+  que instalar nada, pero se pierden al reiniciar, y no se pueden elegir grupos que necesiten base de datos, como
+  Spring Data. Sin base de pruebas, las pruebas de integración usan una base en memoria que se crea al ejecutarlas.
+</p>
+
+@if (engines.hasValue() && engineList().length === 0) {
+<p class="error" role="alert">No hay motores registrados. Créalos en «Bases de datos», en el menú superior.</p>
+}
+
+<section class="section">
+  <mat-slide-toggle [checked]="form().controls.useDatabase.value" (change)="toggleDatabase($event.checked)"
+    data-testid="use-database">
+    Base de datos de desarrollo
+  </mat-slide-toggle>
+  @if (form().controls.useDatabase.value) {
+  <app-connection-fields [connection]="form().controls.database" [engines]="engineList()" testIdPrefix="database" />
+  }
+</section>
+
+<section class="section">
+  <mat-slide-toggle [checked]="form().controls.useTestDatabase.value" [disabled]="!form().controls.useDatabase.value"
+    (change)="toggleTestDatabase($event.checked)" data-testid="use-test-database">
+    Base de datos de pruebas
+  </mat-slide-toggle>
+  <p class="hint">
+    Solo con base de desarrollo. La usan las pruebas de integración: al elegirla, la generación de pruebas queda
+    activada.
+  </p>
+  @if (form().controls.useTestDatabase.value) {
+  <app-connection-fields [connection]="form().controls.testDatabase" [engines]="engineList()"
+    testIdPrefix="test-database" />
+  }
+</section>

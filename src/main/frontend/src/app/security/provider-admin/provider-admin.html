@@ -1,0 +1,149 @@
+<div class="layout">
+    <nav class="list" aria-label="Proveedores de identidad">
+        <button matButton="filled" type="button" (click)="startCreate()" data-testid="new-provider">Nuevo proveedor</button>
+        @for (provider of providerList(); track provider.id) {
+        <button matButton type="button" class="item" [class.item--active]="isEditing(provider.id)"
+            (click)="edit(provider)" [attr.data-testid]="'edit-' + provider.id">
+            <span class="item-text">
+                {{ provider.name }}
+                <span class="meta">{{ hostingLabels[provider.hosting] }} · {{ usesOf(provider) }}</span>
+            </span>
+        </button>
+        }
+    </nav>
+
+    <section class="detail">
+        @if (loadError(); as message) {
+        <p class="error" role="alert" data-testid="load-error">{{ message }}</p>
+        }
+
+        @if (form(); as providerForm) {
+        <h2 class="title">{{ isEdit() ? 'Editar proveedor' : 'Nuevo proveedor' }}</h2>
+
+        <div class="fields">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Id</mat-label>
+                <input matInput [formControl]="providerForm.controls.id" [readonly]="isEdit()" data-testid="provider-id" />
+                @if (providerForm.controls.id.hasError('pattern')) {
+                <mat-error>Use minúsculas, números y guiones, por ejemplo entra-id</mat-error>
+                } @else {
+                <mat-error>Obligatorio</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Nombre</mat-label>
+                <input matInput [formControl]="providerForm.controls.name" data-testid="provider-name" />
+                <mat-error>Obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Alojamiento</mat-label>
+                <mat-select [formControl]="providerForm.controls.hosting" data-testid="provider-hosting">
+                    @for (hosting of hostings; track hosting) {
+                    <mat-option [value]="hosting">{{ hostingLabels[hosting] }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput rows="2" [formControl]="providerForm.controls.description"
+                    data-testid="provider-description"></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide">
+                <mat-label>URL del emisor</mat-label>
+                <input matInput [formControl]="providerForm.controls.issuerUriTemplate" data-testid="provider-template" />
+                <mat-hint>{{ templateHint }}</mat-hint>
+                <mat-error>Debe empezar por https:// o por un dato</mat-error>
+            </mat-form-field>
+        </div>
+
+        @if (preview(providerForm); as url) {
+        <p class="preview" data-testid="issuer-preview">Ejemplo: <code>{{ url }}</code></p>
+        }
+
+        @if (mismatchOf(providerForm); as mismatch) {
+        @if (mismatch.undeclared.length > 0) {
+        <p class="field-error" data-testid="undeclared">Marcadores sin parámetro: {{ mismatch.undeclared.join(', ') }}</p>
+        <button matButton="tonal" type="button" (click)="addMissing(providerForm)" data-testid="add-missing-parameters">
+            Agregar parámetros que faltan
+        </button>
+        }
+        @if (mismatch.unused.length > 0) {
+        <p class="field-error" data-testid="unused">Parámetros que la URL no usa: {{ mismatch.unused.join(', ') }}</p>
+        }
+        }
+        @if (providerForm.hasError('templateRequired')) {
+        <p class="field-error" data-testid="template-required">
+            Para que la API valide sus tokens, el proveedor necesita la URL del emisor.
+        </p>
+        }
+
+        <h3 class="subtitle">Parámetros</h3>
+        @for (parameter of providerForm.controls.parameters.controls; track parameter; let i = $index) {
+        <div class="param" [attr.data-testid]="'param-' + i">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Clave</mat-label>
+                <input matInput [formControl]="parameter.controls.key" [attr.data-testid]="'param-key-' + i" />
+                <mat-error>Letras y números, empezando por letra</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Etiqueta</mat-label>
+                <input matInput [formControl]="parameter.controls.label" [attr.data-testid]="'param-label-' + i" />
+                <mat-error>Obligatoria</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Ejemplo</mat-label>
+                <input matInput [formControl]="parameter.controls.example" [attr.data-testid]="'param-example-' + i" />
+            </mat-form-field>
+            <button matButton type="button" (click)="removeParameter(providerForm, i)"
+                [attr.data-testid]="'remove-param-' + i">
+                Quitar
+            </button>
+        </div>
+        } @empty {
+        <p class="hint">Sin parámetros.</p>
+        }
+        <button matButton="tonal" type="button" (click)="addParameter(providerForm)" data-testid="add-parameter">
+            Agregar parámetro
+        </button>
+
+        <div class="fields uses">
+            <mat-checkbox [formControl]="providerForm.controls.supportsResourceServer" data-testid="provider-api">
+                Sirve para la API (Resource Server)
+            </mat-checkbox>
+            <mat-checkbox [formControl]="providerForm.controls.supportsLogin" data-testid="provider-login">
+                Sirve para el inicio de sesión
+            </mat-checkbox>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide">
+                <mat-label>Documentación</mat-label>
+                <input matInput [formControl]="providerForm.controls.documentationUrl" data-testid="provider-docs" />
+                <mat-error>Debe empezar por https://</mat-error>
+            </mat-form-field>
+        </div>
+
+        @if (providerForm.hasError('noUse')) {
+        <p class="field-error" data-testid="no-use">Marca al menos un uso: la API o el inicio de sesión.</p>
+        }
+
+        @if (saveError(); as message) {
+        <p class="error" role="alert" data-testid="save-error">{{ message }}</p>
+        }
+        @if (notice(); as message) {
+        <p class="notice" role="status" data-testid="notice">{{ message }}</p>
+        }
+
+        <div class="actions">
+            <button matButton="filled" type="button" (click)="save(providerForm)" [disabled]="saving()"
+                data-testid="save">
+                Guardar
+            </button>
+            <button matButton type="button" (click)="cancel()">Cancelar</button>
+        </div>
+        } @else {
+        <p class="hint">Elige un proveedor de la lista o crea uno nuevo.</p>
+        }
+    </section>
+</div>

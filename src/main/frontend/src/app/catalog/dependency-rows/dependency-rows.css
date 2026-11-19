@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+/* Cada dependencia es una tarjeta; sus campos ocupan tantas columnas como quepan */
+.dependency {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  background: var(--mat-sys-surface-container-lowest);
+}
+
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  grid-column: 1 / -1;
+}
+
+.row-error,
+.warn {
+  margin: 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-error);
+}
+
+.row-error {
+  grid-column: 1 / -1;
+}
+
+.warn {
+  margin-bottom: 8px;
+}

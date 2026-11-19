@@ -1,0 +1,183 @@
+<mat-stepper linear class="stepper" (selectionChange)="onStepChange($event)">
+  <mat-step [stepControl]="form.controls.basics" label="Proyecto">
+    @let basics = form.controls.basics.controls;
+
+    <h3 class="title">Identidad</h3>
+    <div class="fields">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>groupId</mat-label>
+        <input matInput [formControl]="basics.groupId" data-testid="group-id" />
+        <mat-hint>Minúsculas separadas por puntos, por ejemplo org.jers</mat-hint>
+        <mat-error>Use minúsculas separadas por puntos, por ejemplo org.jers</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>artifactId</mat-label>
+        <input matInput [formControl]="basics.artifactId" data-testid="artifact-id" />
+        <mat-hint>Minúsculas, números y guiones, por ejemplo api-clientes</mat-hint>
+        <mat-error>Use minúsculas, números y guiones, por ejemplo api-clientes</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Nombre</mat-label>
+        <input matInput [formControl]="basics.name" data-testid="name" />
+        <mat-hint>No se recomiendan caracteres especiales</mat-hint>
+        <mat-error>Obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide">
+        <mat-label>Descripción</mat-label>
+        <input matInput [formControl]="basics.description" />
+      </mat-form-field>
+    </div>
+    <p class="package" data-testid="base-package">
+      Paquete base: <code>{{ basePackage() ?? '—' }}</code>
+    </p>
+
+    <h3 class="title">Construcción</h3>
+    <div class="fields">
+      <mat-button-toggle-group [formControl]="basics.buildTool" aria-label="Herramienta de build">
+        <mat-button-toggle value="MAVEN">Maven</mat-button-toggle>
+        <mat-button-toggle value="GRADLE">Gradle</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Java</mat-label>
+        <mat-select [formControl]="basics.javaVersion">
+          @for (version of javaVersions; track version) {
+          <mat-option [value]="version">{{ version }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-button-toggle-group [formControl]="basics.packaging" aria-label="Empaquetado">
+        <mat-button-toggle value="JAR">JAR</mat-button-toggle>
+        <mat-button-toggle value="WAR">WAR</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Puerto HTTP</mat-label>
+        <input matInput type="number" [formControl]="basics.serverPort" data-testid="server-port" />
+        <mat-error>Entre 1 y 65535</mat-error>
+      </mat-form-field>
+
+      <mat-slide-toggle [formControl]="basics.reactive">Reactivo (WebFlux / R2DBC)</mat-slide-toggle>
+    </div>
+
+    <div class="actions">
+      <button matButton="filled" matStepperNext type="button" (click)="form.controls.basics.markAllAsTouched()"
+        data-testid="next-basics">
+        Siguiente
+      </button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="form.controls.architecture" label="Arquitectura">
+    <app-architecture-step [form]="form.controls.architecture" />
+
+    <div class="actions">
+      <button matButton matStepperPrevious type="button">Atrás</button>
+      <button matButton="filled" matStepperNext type="button" data-testid="next-architecture">Siguiente</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="form.controls.databases" label="Bases de datos">
+    <app-database-step [form]="form.controls.databases" />
+
+    <div class="actions">
+      <button matButton matStepperPrevious type="button">Atrás</button>
+      <button matButton="filled" matStepperNext type="button" (click)="form.controls.databases.markAllAsTouched()"
+        data-testid="next-databases">
+        Siguiente
+      </button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="form.controls.security" label="Seguridad">
+    <app-security-step [form]="form.controls.security"
+      [reactive]="form.controls.basics.controls.reactive.value"
+      [artifactId]="form.controls.basics.controls.artifactId.value"
+      (dependenciesChange)="securityDependencies.set($event)" />
+
+    <div class="actions">
+      <button matButton matStepperPrevious type="button">Atrás</button>
+      <button matButton="filled" matStepperNext type="button" (click)="form.controls.security.markAllAsTouched()"
+        data-testid="next-security">
+        Siguiente
+      </button>
+    </div>
+  </mat-step>
+
+  <mat-step label="Modelo" [completed]="modelValid()">
+    <app-model-step [form]="form.controls.model" [enginesWithoutSequences]="enginesWithoutSequences()"
+      (validityChange)="modelValid.set($event)" />
+
+    @if (!modelValid()) {
+    <p class="hint" data-testid="model-invalid">Corrige los errores del modelo para continuar.</p>
+    }
+
+    <div class="actions">
+      <button matButton matStepperPrevious type="button">Atrás</button>
+      <button matButton="filled" matStepperNext type="button" data-testid="next-model">Siguiente</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="form.controls.dependencies" label="Dependencias">
+    <app-dependency-step [form]="form.controls.dependencies"
+      [buildTool]="form.controls.basics.controls.buildTool.value"
+      [reactive]="form.controls.basics.controls.reactive.value"
+      [databaseDriver]="driverOf(form.controls.databases.controls.database)"
+      [testDatabaseDriver]="driverOf(form.controls.databases.controls.testDatabase)"
+      [securityDependencies]="securityDependencies().chosen"
+      [securityArtifacts]="securityDependencies().artifacts"
+      [modelGroupIds]="modelGroupIds()" />
+
+    <div class="actions">
+      <button matButton matStepperPrevious type="button">Atrás</button>
+      <button matButton="filled" matStepperNext type="button" data-testid="next-dependencies">Siguiente</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="form.controls.options" label="Opciones">
+    @let options = form.controls.options.controls;
+
+    <div class="options">
+      <mat-slide-toggle [formControl]="options.javadoc" data-testid="option-javadoc">
+        Javadoc en español en cada clase, atributo y método
+      </mat-slide-toggle>
+
+      <div>
+        <mat-slide-toggle [checked]="testsEnabled()" [disabled]="testsRequired()"
+          (change)="options.unitTests.setValue($event.checked)" data-testid="option-tests">
+          Generar pruebas (unitarias y, con base de datos, de integración)
+        </mat-slide-toggle>
+        @if (testsRequired()) {
+        <p class="hint" data-testid="option-tests-locked">
+          Activadas porque elegiste una base de datos de pruebas: la usan las pruebas de integración.
+        </p>
+        }
+      </div>
+
+      <div>
+        <p class="label">Archivo de configuración</p>
+        <mat-button-toggle-group [formControl]="options.configFormat" aria-label="Archivo de configuración">
+          <mat-button-toggle value="YAML">application.yml</mat-button-toggle>
+          <mat-button-toggle value="PROPERTIES">application.properties</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button matButton matStepperPrevious type="button">Atrás</button>
+      <button matButton="filled" matStepperNext type="button" data-testid="next-options">Siguiente</button>
+    </div>
+  </mat-step>
+
+  <mat-step [label]="summaryLabel">
+    <app-project-summary [request]="planRequest()" />
+
+    <div class="actions">
+      <button matButton matStepperPrevious type="button">Atrás</button>
+    </div>
+  </mat-step>
+</mat-stepper>

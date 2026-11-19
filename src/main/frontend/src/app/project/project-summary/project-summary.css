@@ -1,0 +1,115 @@
+:host {
+  display: block;
+}
+
+.loading {
+  height: 4px;
+  margin-bottom: 8px;
+}
+
+.hint {
+  margin: 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.error {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  padding: 8px 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  background: var(--mat-sys-surface-container-lowest);
+}
+
+.dependencies {
+  margin-top: 12px;
+}
+
+.title {
+  margin: 0 0 6px;
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-primary);
+}
+
+/* Etiqueta a la izquierda y valor a la derecha */
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 12px;
+  margin: 0;
+  font: var(--mat-sys-body-small);
+}
+
+.facts dt {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.facts dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 0 8px;
+  border-radius: 999px;
+  font: var(--mat-sys-label-small);
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+/* Aviso del segundo proyecto (servidor de autorización) */
+.second-project {
+  margin: 8px 0 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font: var(--mat-sys-body-small);
+  background: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font: var(--mat-sys-body-small);
+}
+
+.table th,
+.table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  text-align: left;
+}
+
+.table th {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.generate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}

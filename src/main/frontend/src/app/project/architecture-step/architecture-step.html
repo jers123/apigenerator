@@ -1,0 +1,84 @@
+<div class="loading">
+  @if (catalog.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (loadError(); as message) {
+<p class="error" role="alert" data-testid="load-error">{{ message }}</p>
+}
+
+@if (catalog.hasValue()) {
+<section class="section">
+  <h3 class="title">Estilo</h3>
+  <mat-radio-group class="styles" [value]="style()" (change)="chooseStyle($event.value)"
+    aria-label="Estilo de arquitectura">
+    @for (item of styles(); track item.id) {
+    <mat-radio-button [value]="item.id" [attr.data-testid]="'style-' + item.id">
+      <span class="style-label">{{ item.label }}</span>
+      <span class="style-description">{{ item.description }}</span>
+    </mat-radio-button>
+    }
+  </mat-radio-group>
+</section>
+
+<section class="section">
+  <h3 class="title">Organización del código</h3>
+  <mat-button-toggle-group [value]="form().controls.layout.value" (change)="chooseLayout($event.value)"
+    aria-label="Organización del código">
+    @for (layout of layouts(); track layout.id) {
+    <mat-button-toggle [value]="layout.id" [disabled]="layout.id === 'MULTI_MODULE' && !styleInfo()?.multiModule"
+      [attr.data-testid]="'layout-' + layout.id">
+      {{ layout.label }}
+    </mat-button-toggle>
+    }
+  </mat-button-toggle-group>
+  @if (!styleInfo()?.multiModule) {
+  <p class="hint">{{ styleInfo()?.label }} se genera en un solo módulo: no tiene capas que separar en subproyectos.</p>
+  }
+</section>
+
+<section class="section">
+  <h3 class="title">Patrones de diseño</h3>
+  <p class="info" role="note" data-testid="patterns-info">
+    Se muestran todos los patrones con su compatibilidad con el estilo elegido.
+    <strong>Incluido por el estilo</strong>: el estilo lo exige y no se puede quitar.
+    <strong>Opcional</strong>: lo decides tú.
+    <strong>Contraindicado</strong>: rompe el estilo; se indica el motivo.
+    <strong>No aplica</strong>: solo tiene sentido en sistemas distribuidos.
+    Los marcados como <em>solo documentación</em> se explican en el README y el ADR, sin generar código.
+  </p>
+
+  @if (removedNotice(); as notice) {
+  <p class="notice" role="status" data-testid="removed-notice">{{ notice }}</p>
+  }
+
+  @for (section of sections(); track section.family) {
+  <h4 class="family">{{ section.label }}</h4>
+  <ul class="patterns">
+    @for (pattern of section.patterns; track pattern.id) {
+    @let compatibility = compatibilityOf(pattern);
+    <li class="pattern" [class.pattern--blocked]="compatibility === 'CONTRAINDICATED' || compatibility === 'NOT_APPLICABLE'"
+      [attr.data-testid]="'pattern-' + pattern.id">
+      <mat-checkbox [checked]="isChecked(pattern)" [disabled]="!isSelectable(pattern)"
+        (change)="togglePattern(pattern, $event.checked)">
+        {{ pattern.label }}
+      </mat-checkbox>
+      <span class="badge" [class.badge--native]="compatibility === 'NATIVE'"
+        [class.badge--compatible]="compatibility === 'COMPATIBLE'"
+        [class.badge--contraindicated]="compatibility === 'CONTRAINDICATED'"
+        [class.badge--not-applicable]="compatibility === 'NOT_APPLICABLE'">
+        {{ compatibilityLabels[compatibility] }}
+      </span>
+      @if (!pattern.generatesCode) {
+      <span class="tag">solo documentación</span>
+      }
+      @if (compatibility === 'CONTRAINDICATED' || compatibility === 'NOT_APPLICABLE') {
+      <span class="reason">{{ pattern.reason }}</span>
+      }
+    </li>
+    }
+  </ul>
+  }
+</section>
+}

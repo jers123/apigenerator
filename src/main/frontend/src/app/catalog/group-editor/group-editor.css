@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  align-items: center;
+}
+
+.fixed {
+  margin: 0;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.title {
+  margin: 16px 0 6px;
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-primary);
+}

@@ -1,0 +1,128 @@
+{
+  "mechanisms": [
+    {
+      "id": "http-basic",
+      "name": "HTTP Basic",
+      "description": "Quien llama envía usuario y contraseña en cada petición.",
+      "role": "API_AUTHENTICATION",
+      "reactiveSupported": true,
+      "requiresIssuer": false,
+      "managesUsers": true,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true },
+        { "name": "Spring Security Test", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-test", "kind": "LIBRARY", "mavenScope": "TEST", "gradleScope": "TEST_IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "api-key",
+      "name": "API Key",
+      "description": "Quien llama envía una clave fija en una cabecera; la valida un filtro propio.",
+      "role": "API_AUTHENTICATION",
+      "reactiveSupported": true,
+      "requiresIssuer": false,
+      "managesUsers": false,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true },
+        { "name": "Spring Security Test", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-test", "kind": "LIBRARY", "mavenScope": "TEST", "gradleScope": "TEST_IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "jwt",
+      "name": "JWT propio",
+      "description": "El proyecto emite tokens JWT firmados en un endpoint de login y los valida en cada petición.",
+      "role": "API_AUTHENTICATION",
+      "reactiveSupported": true,
+      "requiresIssuer": false,
+      "managesUsers": true,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security OAuth2 Resource Server", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-oauth2-resource-server", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true },
+        { "name": "Spring Security Test", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-test", "kind": "LIBRARY", "mavenScope": "TEST", "gradleScope": "TEST_IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "oauth2-resource-server",
+      "name": "OAuth2 Resource Server",
+      "description": "La API valida tokens emitidos por un servidor de autorización: el propio o un proveedor externo.",
+      "role": "API_AUTHENTICATION",
+      "reactiveSupported": true,
+      "requiresIssuer": true,
+      "managesUsers": false,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security OAuth2 Resource Server", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-oauth2-resource-server", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true },
+        { "name": "Spring Security Test", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-test", "kind": "LIBRARY", "mavenScope": "TEST", "gradleScope": "TEST_IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "form-login",
+      "name": "Formulario con sesión",
+      "description": "Las personas inician sesión en una página de login; el servidor guarda la sesión.",
+      "role": "BROWSER_LOGIN",
+      "reactiveSupported": true,
+      "requiresIssuer": false,
+      "managesUsers": true,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true },
+        { "name": "Spring Security Test", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-test", "kind": "LIBRARY", "mavenScope": "TEST", "gradleScope": "TEST_IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "oidc-login",
+      "name": "OAuth2 / OIDC Login",
+      "description": "Las personas inician sesión con un proveedor de identidad o con el servidor de autorización propio.",
+      "role": "BROWSER_LOGIN",
+      "reactiveSupported": true,
+      "requiresIssuer": true,
+      "managesUsers": false,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security OAuth2 Client", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-oauth2-client", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true },
+        { "name": "Spring Security Test", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-test", "kind": "LIBRARY", "mavenScope": "TEST", "gradleScope": "TEST_IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "method-security",
+      "name": "Seguridad por método (@PreAuthorize)",
+      "description": "Reglas de acceso en cada método con @PreAuthorize, según roles o permisos.",
+      "role": "ADD_ON",
+      "reactiveSupported": true,
+      "requiresIssuer": false,
+      "managesUsers": false,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "cors",
+      "name": "CORS",
+      "description": "Permite que un front en otro dominio (por ejemplo, Angular en otro puerto) llame a la API.",
+      "role": "ADD_ON",
+      "reactiveSupported": true,
+      "requiresIssuer": false,
+      "managesUsers": false,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Security", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true }
+      ]
+    },
+    {
+      "id": "authorization-server",
+      "name": "Servidor de autorización propio",
+      "description": "Segundo proyecto con Spring Authorization Server que emite los tokens OAuth2. No funciona en reactivo.",
+      "role": "AUTHORIZATION_SERVER",
+      "reactiveSupported": false,
+      "requiresIssuer": false,
+      "managesUsers": true,
+      "conflictsWith": [],
+      "dependencies": [
+        { "name": "Spring Authorization Server", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-oauth2-authorization-server", "kind": "LIBRARY", "mavenScope": "COMPILE", "gradleScope": "IMPLEMENTATION", "includedByDefault": true },
+        { "name": "Spring Security Test", "groupId": "org.springframework.boot", "artifactId": "spring-boot-starter-security-test", "kind": "LIBRARY", "mavenScope": "TEST", "gradleScope": "TEST_IMPLEMENTATION", "includedByDefault": true }
+      ]
+    }
+  ]
+}

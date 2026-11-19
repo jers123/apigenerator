@@ -1,0 +1,16 @@
+/*
+ * Estilos globales de API Generator.
+ * Los colores y la tipografía vienen del tema (src/theme.scss) mediante
+ * las variables del sistema de Material 3: --mat-sys-*.
+ */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+}

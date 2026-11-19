@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  Reglas de documentación del proyecto apigenerator.
+  Obligan Javadoc en clases, métodos, constructores y atributos
+  de cualquier visibilidad (incluido private).
+-->
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="warning"/>
+    <property name="fileExtensions" value="java"/>
+
+    <module name="TreeWalker">
+        <!-- Toda clase, interfaz, enum y record debe tener Javadoc -->
+        <module name="MissingJavadocType">
+            <property name="scope" value="private"/>
+        </module>
+
+        <!-- Todo método y constructor debe tener Javadoc -->
+        <module name="MissingJavadocMethod">
+            <property name="scope" value="private"/>
+            <property name="allowMissingPropertyJavadoc" value="false"/>
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
+        </module>
+
+        <!-- Todo atributo y constante de enum debe tener Javadoc -->
+        <module name="JavadocVariable">
+            <property name="accessModifiers" value="public, protected, package, private"/>
+        </module>
+
+        <!-- El Javadoc existente debe ser correcto: @param, @return, @throws -->
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value="public, protected, package, private"/>
+        </module>
+        <module name="JavadocType"/>
+
+        <!-- Estilo: primera frase termina en punto, sin etiquetas vacías -->
+        <module name="JavadocStyle"/>
+        <module name="NonEmptyAtclauseDescription"/>
+    </module>
+</module>

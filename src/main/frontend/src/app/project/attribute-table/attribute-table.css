@@ -1,0 +1,76 @@
+:host {
+  display: block;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) minmax(130px, 1fr) 56px 56px minmax(120px, 1fr) 184px;
+  gap: 8px;
+  align-items: center;
+}
+
+.row > mat-checkbox {
+  justify-self: center;
+}
+
+.header {
+  font: var(--mat-sys-label-medium);
+  color: var(--mat-sys-on-surface-variant);
+  padding: 0 4px;
+}
+
+.header > span:nth-child(3),
+.header > span:nth-child(4) {
+  text-align: center;
+}
+
+.attribute {
+  padding: 6px 4px;
+  border-radius: 8px;
+}
+
+.attribute + .attribute {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.attribute.has-errors {
+  background: color-mix(in srgb, var(--mat-sys-error-container) 35%, transparent);
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.constraints {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px 16px;
+  align-items: center;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--mat-sys-surface-container);
+}
+
+.constraints .wide {
+  grid-column: span 2;
+}
+
+.summary,
+.hint {
+  margin: 4px 0 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.issue {
+  margin: 4px 0 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-error);
+}
+
+.issue.warning {
+  color: var(--mat-sys-tertiary);
+}

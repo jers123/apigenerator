@@ -1,0 +1,580 @@
+{
+  "groups" : [ {
+    "id" : "maven",
+    "name" : "Maven",
+    "category" : "MAVEN",
+    "dependencies" : [ {
+      "name" : "Apache Maven",
+      "groupId" : "org.apache.maven",
+      "artifactId" : "apache-maven",
+      "version" : null,
+      "kind" : "BUILD_TOOL",
+      "mavenScope" : null,
+      "gradleScope" : null,
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring Boot Maven Plugin",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-maven-plugin",
+      "version" : null,
+      "kind" : "PLUGIN",
+      "mavenScope" : null,
+      "gradleScope" : null,
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Maven Compiler Plugin",
+      "groupId" : "org.apache.maven.plugins",
+      "artifactId" : "maven-compiler-plugin",
+      "version" : null,
+      "kind" : "PLUGIN",
+      "mavenScope" : null,
+      "gradleScope" : null,
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : true,
+    "requiresDatabase" : false
+  }, {
+    "id" : "gradle",
+    "name" : "Gradle",
+    "category" : "GRADLE",
+    "dependencies" : [ {
+      "name" : "JUnit Platform Launcher",
+      "groupId" : "org.junit.platform",
+      "artifactId" : "junit-platform-launcher",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_RUNTIME_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "spring-boot",
+    "name" : "Spring Boot",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Spring Boot Starter Parent",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-parent",
+      "version" : "4.1.2",
+      "kind" : "PARENT",
+      "mavenScope" : null,
+      "gradleScope" : null,
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring Boot Starter",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : false
+    }, {
+      "name" : "Spring Boot Starter Test",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-test",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : true,
+    "requiresDatabase" : false
+  }, {
+    "id" : "spring-web",
+    "name" : "Spring Web",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Spring Web MVC",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-webmvc",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring Web MVC Test",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-webmvc-test",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring WebFlux",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-webflux",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : true
+    }, {
+      "name" : "Spring WebFlux Test",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-webflux-test",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : true,
+    "requiresDatabase" : false
+  }, {
+    "id" : "spring-configuration-processor",
+    "name" : "Spring Configuration Processor",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Spring Configuration Processor",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-configuration-processor",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "PROVIDED",
+      "gradleScope" : "ANNOTATION_PROCESSOR",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "config-client",
+    "name" : "Config Client",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Spring Cloud Starter Config",
+      "groupId" : "org.springframework.cloud",
+      "artifactId" : "spring-cloud-starter-config",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring Cloud Dependencies",
+      "groupId" : "org.springframework.cloud",
+      "artifactId" : "spring-cloud-dependencies",
+      "version" : "2025.1.0",
+      "kind" : "BOM",
+      "mavenScope" : null,
+      "gradleScope" : null,
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "spring-data",
+    "name" : "Spring Data",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Spring Data JPA",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-data-jpa",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring Data JPA Test",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-data-jpa-test",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring Data R2DBC",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-data-r2dbc",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : true
+    }, {
+      "name" : "Spring Data R2DBC Test",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-data-r2dbc-test",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : true
+  }, {
+    "id" : "spring-devtools",
+    "name" : "Spring DevTools",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Spring DevTools",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-devtools",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "DEVELOPMENT_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "spring-for-rabbitmq",
+    "name" : "Spring for RabbitMQ",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Spring for RabbitMQ",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-amqp",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Spring for RabbitMQ Streams",
+      "groupId" : "org.springframework.amqp",
+      "artifactId" : "spring-rabbit-stream",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "validation",
+    "name" : "Validation",
+    "category" : "SPRING",
+    "dependencies" : [ {
+      "name" : "Validation",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-validation",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Validation Test",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-starter-validation-test",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "lombok",
+    "name" : "Lombok",
+    "category" : "OTHER",
+    "dependencies" : [ {
+      "name" : "Lombok",
+      "groupId" : "org.projectlombok",
+      "artifactId" : "lombok",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "PROVIDED",
+      "gradleScope" : "ANNOTATION_PROCESSOR",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "gson",
+    "name" : "Gson",
+    "category" : "OTHER",
+    "dependencies" : [ {
+      "name" : "Gson",
+      "groupId" : "com.google.code.gson",
+      "artifactId" : "gson",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "mockito",
+    "name" : "Mockito",
+    "category" : "OTHER",
+    "dependencies" : [ {
+      "name" : "Mockito",
+      "groupId" : "org.mockito",
+      "artifactId" : "mockito-core",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "springdoc-openapi",
+    "name" : "SpringDoc OpenAPI",
+    "category" : "OTHER",
+    "dependencies" : [ {
+      "name" : "Swagger UI",
+      "groupId" : "org.springdoc",
+      "artifactId" : "springdoc-openapi-starter-webmvc-ui",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Swagger UI Reactive",
+      "groupId" : "org.springdoc",
+      "artifactId" : "springdoc-openapi-starter-webflux-ui",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "COMPILE",
+      "gradleScope" : "IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "h2-database",
+    "name" : "H2 Database",
+    "category" : "DATABASE",
+    "dependencies" : [ {
+      "name" : "H2 Console",
+      "groupId" : "org.springframework.boot",
+      "artifactId" : "spring-boot-h2console",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "H2",
+      "groupId" : "com.h2database",
+      "artifactId" : "h2",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "H2 R2DBC",
+      "groupId" : "io.r2dbc",
+      "artifactId" : "r2dbc-h2",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "TEST",
+      "gradleScope" : "TEST_IMPLEMENTATION",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "ibm-db2-driver",
+    "name" : "IBM DB2 Driver",
+    "category" : "DATABASE",
+    "dependencies" : [ {
+      "name" : "IBM DB2",
+      "groupId" : "com.ibm.db2",
+      "artifactId" : "jcc",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "IBM DB2 R2DBC",
+      "groupId" : "com.ibm.db2",
+      "artifactId" : "db2-r2dbc",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "mariadb-driver",
+    "name" : "MariaDB Driver",
+    "category" : "DATABASE",
+    "dependencies" : [ {
+      "name" : "MariaDB",
+      "groupId" : "org.mariadb.jdbc",
+      "artifactId" : "mariadb-java-client",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "MariaDB R2DBC",
+      "groupId" : "org.mariadb",
+      "artifactId" : "r2dbc-mariadb",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "mysql-driver",
+    "name" : "MySQL Driver",
+    "category" : "DATABASE",
+    "dependencies" : [ {
+      "name" : "MySQL",
+      "groupId" : "com.mysql",
+      "artifactId" : "mysql-connector-j",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "MySQL R2DBC",
+      "groupId" : "io.asyncer",
+      "artifactId" : "r2dbc-mysql",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "oracle-driver",
+    "name" : "Oracle Driver",
+    "category" : "DATABASE",
+    "dependencies" : [ {
+      "name" : "Oracle",
+      "groupId" : "com.oracle.database.jdbc",
+      "artifactId" : "ojdbc17",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "Oracle R2DBC",
+      "groupId" : "com.oracle.database.r2dbc",
+      "artifactId" : "oracle-r2dbc",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "postgresql-driver",
+    "name" : "PostgreSQL Driver",
+    "category" : "DATABASE",
+    "dependencies" : [ {
+      "name" : "PostgreSQL",
+      "groupId" : "org.postgresql",
+      "artifactId" : "postgresql",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "PostgreSQL R2DBC",
+      "groupId" : "org.postgresql",
+      "artifactId" : "r2dbc-postgresql",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  }, {
+    "id" : "ms-sql-server-driver",
+    "name" : "MS SQL Server Driver",
+    "category" : "DATABASE",
+    "dependencies" : [ {
+      "name" : "SQL Server",
+      "groupId" : "com.microsoft.sqlserver",
+      "artifactId" : "mssql-jdbc",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : true,
+      "reactive" : false
+    }, {
+      "name" : "SQL Server R2DBC",
+      "groupId" : "io.r2dbc",
+      "artifactId" : "r2dbc-mssql",
+      "version" : null,
+      "kind" : "LIBRARY",
+      "mavenScope" : "RUNTIME",
+      "gradleScope" : "RUNTIME_ONLY",
+      "includedByDefault" : false,
+      "reactive" : true
+    } ],
+    "selectedByDefault" : false,
+    "requiresDatabase" : false
+  } ]
+}

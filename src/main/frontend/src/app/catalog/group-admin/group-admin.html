@@ -1,0 +1,46 @@
+<div class="layout">
+  <nav class="list" aria-label="Grupos del catálogo">
+    <button matButton="filled" type="button" (click)="startCreate()" data-testid="new-group">Nuevo grupo</button>
+    @for (group of groups(); track group.id) {
+    <button matButton type="button" class="item" [class.item--active]="isEditing(group.id)" (click)="edit(group.id)"
+      [attr.data-testid]="'edit-' + group.id">
+      <span class="item-text">
+        {{ group.name }}
+        <span class="meta">{{ group.categoryLabel }}</span>
+      </span>
+    </button>
+    }
+  </nav>
+
+  <section class="detail">
+    @if (loadError(); as message) {
+    <p class="error" role="alert" data-testid="load-error">{{ message }}</p>
+    }
+
+    @if (form(); as groupForm) {
+    <h2 class="title">{{ isEdit() ? 'Editar grupo' : 'Nuevo grupo' }}</h2>
+
+    <app-group-editor [form]="groupForm" [categories]="categories" [idLocked]="isEdit()" />
+
+    @if (saveError(); as message) {
+    <p class="error" role="alert" data-testid="save-error">{{ message }}</p>
+    }
+    @if (notice(); as message) {
+    <p class="notice" role="status" data-testid="notice">{{ message }}</p>
+    }
+
+    <div class="actions">
+      <button matButton="filled" type="button" (click)="save(groupForm)" [disabled]="saving()" data-testid="save">
+        Guardar
+      </button>
+      <button matButton type="button" (click)="cancel()">Cancelar</button>
+    </div>
+    } @else if (editing()) {
+    <mat-progress-bar mode="indeterminate" />
+    } @else {
+    <p class="hint">
+      Elige un grupo de la lista o crea uno nuevo. Los drivers de base de datos se editan en «Bases de datos».
+    </p>
+    }
+  </section>
+</div>

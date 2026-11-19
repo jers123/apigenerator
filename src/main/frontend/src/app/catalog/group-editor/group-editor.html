@@ -1,0 +1,42 @@
+<div class="header">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Id</mat-label>
+        <input matInput [formControl]="form().controls.id" [readonly]="idLocked()" data-testid="group-id" />
+        @if (form().controls.id.hasError('pattern')) {
+        <mat-error>Use minúsculas, números y guiones, por ejemplo spring-web</mat-error>
+        } @else {
+        <mat-error>Obligatorio</mat-error>
+        }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Nombre</mat-label>
+        <input matInput [formControl]="form().controls.name" data-testid="group-name" />
+        <mat-error>Obligatorio</mat-error>
+    </mat-form-field>
+
+    @if (categories().length > 1) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Categoría</mat-label>
+        <mat-select [formControl]="form().controls.category" data-testid="group-category">
+            @for (category of categories(); track category) {
+            <mat-option [value]="category">{{ categoryLabels[category] }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+    } @else {
+    <p class="fixed" data-testid="group-category-fixed">
+        Categoría: {{ categoryLabels[form().controls.category.value] }}
+    </p>
+    }
+
+    <mat-checkbox [formControl]="form().controls.selectedByDefault">Marcado por defecto</mat-checkbox>
+    @if (categories().length > 1) {
+    <mat-checkbox [formControl]="form().controls.requiresDatabase" data-testid="group-requires-database">
+        Necesita base de datos
+    </mat-checkbox>
+    }
+</div>
+
+<h3 class="title">Dependencias</h3>
+<app-dependency-rows [rows]="form().controls.dependencies" />

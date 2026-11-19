@@ -1,0 +1,99 @@
+@if (versions.error()) {
+<p class="warn" data-testid="versions-error">
+    No se pudieron consultar las versiones: escríbelas a mano o déjalas vacías para que las gestione Spring Boot.
+</p>
+}
+
+@for (row of rows().controls; track row; let i = $index) {
+<div class="dependency" [attr.data-testid]="'dependency-' + i">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Nombre</mat-label>
+        <input matInput [formControl]="row.controls.name" />
+        <mat-error>Obligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>groupId</mat-label>
+        <input matInput [formControl]="row.controls.groupId" [attr.data-testid]="'group-id-' + i" />
+        <mat-error>Obligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>artifactId</mat-label>
+        <input matInput [formControl]="row.controls.artifactId" [attr.data-testid]="'artifact-id-' + i" />
+        <mat-error>Obligatorio</mat-error>
+    </mat-form-field>
+
+    @let info = versionsOf(row);
+    @if (info && info.available) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+        <mat-label>Versión</mat-label>
+        <mat-select [formControl]="row.controls.version" placeholder="Gestionada por Spring Boot"
+            [attr.data-testid]="'version-' + i">
+            <mat-option [value]="null">Gestionada por Spring Boot</mat-option>
+            @for (version of versionOptions(row, info); track version) {
+            <mat-option [value]="version">{{ version }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+    } @else {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+        <mat-label>Versión</mat-label>
+        <input matInput [formControl]="row.controls.version" placeholder="Gestionada por Spring Boot"
+            [attr.data-testid]="'version-' + i" />
+        @if (info) {
+        <mat-hint>Sin conexión con Maven Central</mat-hint>
+        }
+    </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Tipo</mat-label>
+        <mat-select [formControl]="row.controls.kind" [attr.data-testid]="'kind-' + i">
+            @for (kind of kinds; track kind) {
+            <mat-option [value]="kind">{{ kind }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    @if (isLibrary(row)) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Scope Maven</mat-label>
+        <mat-select [formControl]="row.controls.mavenScope" [attr.data-testid]="'maven-scope-' + i">
+            @for (scope of mavenScopes; track scope) {
+            <mat-option [value]="scope">{{ scope }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Configuración Gradle</mat-label>
+        <mat-select [formControl]="row.controls.gradleScope" [attr.data-testid]="'gradle-scope-' + i">
+            @for (scope of gradleScopes; track scope) {
+            <mat-option [value]="scope">{{ scope }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+    }
+
+    <div class="flags">
+        <mat-checkbox [formControl]="row.controls.includedByDefault">Incluida por defecto</mat-checkbox>
+        <mat-checkbox [formControl]="row.controls.reactive">Reactiva</mat-checkbox>
+        <button matButton type="button" (click)="removeDependency(i)" [disabled]="rows().length === 1"
+            [attr.data-testid]="'remove-' + i">
+            Quitar
+        </button>
+    </div>
+
+    @if (row.hasError('scopesRequired')) {
+    <p class="row-error">Una librería necesita scope de Maven y configuración de Gradle.</p>
+    }
+    @if (row.hasError('reactiveByDefault')) {
+    <p class="row-error">Una dependencia reactiva no puede ir incluida por defecto: solo se activa en modo reactivo.</p>
+    }
+</div>
+}
+
+<button matButton="tonal" type="button" (click)="addDependency()" data-testid="add-dependency">
+    Agregar dependencia
+</button>

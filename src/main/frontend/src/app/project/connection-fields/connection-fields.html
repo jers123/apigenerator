@@ -1,0 +1,47 @@
+@let fields = connection().controls;
+<div class="fields">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Motor</mat-label>
+    <mat-select [value]="fields.engineId.value" (selectionChange)="chooseEngine($event.value)"
+      [attr.data-testid]="testIdPrefix() + '-engine'">
+      @for (item of engines(); track item.id) {
+      <mat-option [value]="item.id">{{ item.label }}{{ item.embedded ? ' (embebida)' : '' }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (fields.host.enabled) {
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Servidor</mat-label>
+    <input matInput [formControl]="fields.host" [attr.data-testid]="testIdPrefix() + '-host'" />
+    <mat-error>Obligatorio</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Puerto</mat-label>
+    <input matInput type="number" [formControl]="fields.port" [attr.data-testid]="testIdPrefix() + '-port'" />
+    <mat-error>Entre 1 y 65535</mat-error>
+  </mat-form-field>
+  }
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Nombre de la base</mat-label>
+    <input matInput [formControl]="fields.databaseName" [attr.data-testid]="testIdPrefix() + '-name'" />
+    <mat-error>Empieza por letra; solo letras, números o _</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Usuario</mat-label>
+    <input matInput [formControl]="fields.username" [attr.data-testid]="testIdPrefix() + '-username'" />
+    <mat-error>Obligatorio</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Contraseña</mat-label>
+    <input matInput type="password" [formControl]="fields.password" autocomplete="new-password" />
+  </mat-form-field>
+</div>
+
+@if (preview(); as url) {
+<p class="preview" [attr.data-testid]="testIdPrefix() + '-url'">URL JDBC: <code>{{ url }}</code></p>
+}

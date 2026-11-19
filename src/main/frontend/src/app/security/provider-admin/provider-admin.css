@@ -1,0 +1,19 @@
+/* Cada parámetro en una fila: clave, etiqueta, ejemplo y botón */
+.param {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(140px, 1fr)) auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.preview {
+  margin: 6px 0 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+  word-break: break-all;
+}
+
+.uses {
+  margin-top: 12px;
+}

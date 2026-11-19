@@ -1,0 +1,130 @@
+:host {
+  display: block;
+}
+
+.loading {
+  height: 4px;
+  margin-bottom: 8px;
+}
+
+.section + .section {
+  margin-top: 16px;
+}
+
+.title {
+  margin: 0 0 6px;
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-primary);
+}
+
+.styles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 4px 16px;
+}
+
+.style-label,
+.style-description {
+  display: block;
+}
+
+.style-description {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.hint {
+  margin: 6px 0 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.info,
+.notice,
+.error {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font: var(--mat-sys-body-small);
+}
+
+.info {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.notice {
+  background: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.error {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.family {
+  margin: 12px 0 4px;
+  font: var(--mat-sys-label-large);
+}
+
+.patterns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pattern {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 2px 8px 6px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+}
+
+.pattern--blocked {
+  background: var(--mat-sys-surface-container);
+}
+
+.badge,
+.tag {
+  padding: 0 8px;
+  border-radius: 999px;
+  font: var(--mat-sys-label-small);
+}
+
+.badge--native {
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.badge--compatible {
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+}
+
+.badge--contraindicated {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.badge--not-applicable {
+  background: var(--mat-sys-surface-container-highest);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.tag {
+  border: 1px solid var(--mat-sys-outline);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.reason {
+  flex-basis: 100%;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}

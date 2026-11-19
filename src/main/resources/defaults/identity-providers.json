@@ -1,0 +1,101 @@
+{
+  "providers" : [ {
+    "id" : "keycloak",
+    "name" : "Keycloak",
+    "description" : "Servidor de identidad de código abierto que instalas tú (por ejemplo, en Docker). Sirve para la API y para el login.",
+    "hosting" : "SELF_HOSTED",
+    "issuerUriTemplate" : "{baseUrl}/realms/{realm}",
+    "parameters" : [ {
+      "key" : "baseUrl",
+      "label" : "URL de Keycloak",
+      "example" : "https://kc.example.com"
+    }, {
+      "key" : "realm",
+      "label" : "Realm",
+      "example" : "myrealm"
+    } ],
+    "supportsResourceServer" : true,
+    "supportsLogin" : true,
+    "documentationUrl" : "https://www.keycloak.org/documentation"
+  }, {
+    "id" : "auth0",
+    "name" : "Auth0",
+    "description" : "Servicio en la nube. El dominio incluye la región del tenant; la URL del emisor termina en '/'.",
+    "hosting" : "CLOUD",
+    "issuerUriTemplate" : "https://{domain}/",
+    "parameters" : [ {
+      "key" : "domain",
+      "label" : "Dominio del tenant",
+      "example" : "mi-tenant.us.auth0.com"
+    } ],
+    "supportsResourceServer" : true,
+    "supportsLogin" : true,
+    "documentationUrl" : "https://auth0.com/docs"
+  }, {
+    "id" : "okta",
+    "name" : "Okta",
+    "description" : "Servicio en la nube. Usa el servidor de autorización por defecto (oauth2/default); si usas uno propio, edita la plantilla.",
+    "hosting" : "CLOUD",
+    "issuerUriTemplate" : "https://{domain}/oauth2/default",
+    "parameters" : [ {
+      "key" : "domain",
+      "label" : "Dominio de Okta",
+      "example" : "mi-org.okta.com"
+    } ],
+    "supportsResourceServer" : true,
+    "supportsLogin" : true,
+    "documentationUrl" : "https://developer.okta.com/docs/api"
+  }, {
+    "id" : "entra-id",
+    "name" : "Microsoft Entra ID",
+    "description" : "Antes Azure AD. La API debe recibir tokens de acceso versión 2.0; con tokens 1.0 el emisor es otro y la validación falla.",
+    "hosting" : "CLOUD",
+    "issuerUriTemplate" : "https://login.microsoftonline.com/{tenantId}/v2.0",
+    "parameters" : [ {
+      "key" : "tenantId",
+      "label" : "Id del tenant (directorio)",
+      "example" : "aaaabbbb-0000-cccc-1111-dddd2222eeee"
+    } ],
+    "supportsResourceServer" : true,
+    "supportsLogin" : true,
+    "documentationUrl" : "https://learn.microsoft.com/es-mx/entra/identity-platform/"
+  }, {
+    "id" : "cognito",
+    "name" : "Amazon Cognito",
+    "description" : "Servicio en la nube de AWS. Plantilla con el formato original de emisor; si tu user pool usa el formato nuevo (issuer-cognito-idp), edítala.",
+    "hosting" : "CLOUD",
+    "issuerUriTemplate" : "https://cognito-idp.{region}.amazonaws.com/{userPoolId}",
+    "parameters" : [ {
+      "key" : "region",
+      "label" : "Región de AWS",
+      "example" : "us-east-1"
+    }, {
+      "key" : "userPoolId",
+      "label" : "Id del user pool",
+      "example" : "us-east-1_abc123"
+    } ],
+    "supportsResourceServer" : true,
+    "supportsLogin" : true,
+    "documentationUrl" : "https://docs.aws.amazon.com/cognito/latest/developerguide/federation-endpoints.html"
+  }, {
+    "id" : "google",
+    "name" : "Google",
+    "description" : "Inicio de sesión con cuentas de Google. Sus tokens de acceso no son JWT que tu API pueda validar, así que no sirve como emisor para la API.",
+    "hosting" : "CLOUD",
+    "issuerUriTemplate" : "https://accounts.google.com",
+    "parameters" : [ ],
+    "supportsResourceServer" : false,
+    "supportsLogin" : true,
+    "documentationUrl" : "https://developers.google.com/identity/openid-connect/openid-connect?hl=es-419"
+  }, {
+    "id" : "github",
+    "name" : "GitHub",
+    "description" : "Inicio de sesión con cuentas de GitHub. Es OAuth2 sin OIDC: Spring Boot ya conoce sus URL, así que no lleva emisor.",
+    "hosting" : "CLOUD",
+    "issuerUriTemplate" : null,
+    "parameters" : [ ],
+    "supportsResourceServer" : false,
+    "supportsLogin" : true,
+    "documentationUrl" : "https://docs.github.com/es/apps/oauth-apps"
+  } ]
+}

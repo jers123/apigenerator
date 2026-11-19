@@ -1,0 +1,266 @@
+@let model = form();
+@let id = model.controls.idSettings.controls;
+@let audit = model.controls.audit.controls;
+
+<div class="loading">
+  @if (validation.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (validationError(); as message) {
+<p class="error" role="alert" data-testid="validation-error">No se pudo validar el modelo: {{ message }}</p>
+}
+
+<section class="config" data-testid="model-config">
+  <h3 class="title">Id y auditoría</h3>
+  <div class="fields">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Tipo del id</mat-label>
+      <mat-select [formControl]="id.type" (selectionChange)="chooseIdType($event.value)" data-testid="id-type">
+        @for (type of idTypes; track type.value) {
+        <mat-option [value]="type.value">{{ type.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Estrategia</mat-label>
+      <mat-select [formControl]="id.generation" data-testid="id-generation">
+        @for (generation of generations(); track generation.value) {
+        <mat-option [value]="generation.value">{{ generation.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div>
+      <p class="label">El id y la auditoría van</p>
+      <mat-button-toggle-group [formControl]="id.placement" aria-label="Ubicación del id" data-testid="id-placement">
+        @for (placement of placements; track placement.value) {
+        <mat-button-toggle [value]="placement.value">{{ placement.label }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
+
+    <div>
+      <p class="label">Auditoría (Spring Data JPA Auditing)</p>
+      <div class="audit">
+        <mat-checkbox [formControl]="audit.createdAt" data-testid="audit-created">createdAt</mat-checkbox>
+        <mat-checkbox [formControl]="audit.updatedAt" data-testid="audit-updated">updatedAt</mat-checkbox>
+      </div>
+    </div>
+  </div>
+
+  @if (sequenceWarning(); as message) {
+  <p class="error" role="alert" data-testid="sequence-warning">{{ message }}</p>
+  }
+  @if (placement() === 'ROOT_SUPERCLASS') {
+  <p class="hint" data-testid="root-hint">
+    Toda entidad debe heredar de una superclase: el id y la auditoría se declaran en la raíz de su árbol.
+  </p>
+  }
+  @if (globalIssues().length > 0) {
+  <ul class="issues" data-testid="global-issues">
+    @for (issue of globalIssues(); track $index) {
+    <li class="issue" [class.warning]="issue.severity === 'WARNING'">{{ issue.message }}</li>
+    }
+  </ul>
+  }
+</section>
+
+<div class="editor">
+  <nav class="lists" aria-label="Superclases y entidades">
+    @if (pendingDelete(); as pending) {
+    <div class="confirm" role="alertdialog" data-testid="confirm-delete">
+      <p class="confirm-text">¿Borrar {{ pending.label }}?</p>
+      @if (pending.detail) {
+      <p class="hint">{{ pending.detail }}</p>
+      }
+      <div class="confirm-actions">
+        <button matButton type="button" (click)="cancelDelete()" data-testid="confirm-delete-no">Cancelar</button>
+        <button matButton="filled" type="button" (click)="confirmDelete()" data-testid="confirm-delete-yes">
+          Borrar
+        </button>
+      </div>
+    </div>
+    }
+
+    <div class="list-header">
+      <h3 class="title">Superclases</h3>
+      <button matButton type="button" (click)="newSuperclass()" data-testid="add-superclass">+ Superclase</button>
+    </div>
+    @for (item of superclassTree(); track item.id) {
+    <div class="item" [class.selected]="isSelected('superclass', item.id)"
+      [style.padding-left.px]="item.depth * 16" [attr.data-testid]="'superclass-' + item.id"
+      [attr.data-depth]="item.depth">
+      <button type="button" class="item-name" (click)="select('superclass', item.id)">{{ item.name }}</button>
+      @if (issueCounts().get(item.id); as count) {
+      @if (count.errors > 0) {
+      <span class="badge errors" [attr.data-testid]="'errors-' + item.id">⛔ {{ count.errors }}</span>
+      }
+      @if (count.warnings > 0) {
+      <span class="badge warnings" [attr.data-testid]="'warnings-' + item.id">⚠ {{ count.warnings }}</span>
+      }
+      }
+      <button matButton type="button" class="delete" (click)="askDelete('superclass', item.id)"
+        [attr.aria-label]="'Borrar ' + item.name" [attr.data-testid]="'delete-superclass-' + item.id">✕</button>
+    </div>
+    } @empty {
+    <p class="hint">Sin superclases.</p>
+    }
+
+    <div class="list-header">
+      <h3 class="title">Entidades</h3>
+      <button matButton type="button" (click)="newEntity()" data-testid="add-entity">+ Entidad</button>
+    </div>
+    @for (item of entityItems(); track item.id) {
+    <div class="item" [class.selected]="isSelected('entity', item.id)" [attr.data-testid]="'entity-' + item.id">
+      <button type="button" class="item-name" (click)="select('entity', item.id)">
+        {{ item.name }}
+        @if (item.superclassName) {
+        <span class="item-extra">hereda de {{ item.superclassName }}</span>
+        }
+      </button>
+      @if (issueCounts().get(item.id); as count) {
+      @if (count.errors > 0) {
+      <span class="badge errors" [attr.data-testid]="'errors-' + item.id">⛔ {{ count.errors }}</span>
+      }
+      @if (count.warnings > 0) {
+      <span class="badge warnings" [attr.data-testid]="'warnings-' + item.id">⚠ {{ count.warnings }}</span>
+      }
+      }
+      <button matButton type="button" class="delete" (click)="askDelete('entity', item.id)"
+        [attr.aria-label]="'Borrar ' + item.name" [attr.data-testid]="'delete-entity-' + item.id">✕</button>
+    </div>
+    } @empty {
+    <p class="hint">Sin entidades: el proyecto se genera sin CRUD.</p>
+    }
+  </nav>
+
+  <section class="detail">
+    @if (selectedEntity(); as entity) {
+    @let e = entity.controls;
+    @let names = selectedNames();
+    <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms" [selectedIndex]="selectedTab()"
+      (selectedIndexChange)="selectedTab.set($event)">
+      <mat-tab label="General">
+        <div class="fields tab">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Nombre</mat-label>
+            <input matInput [formControl]="e.name" placeholder="DetallePedido" data-testid="entity-name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>Tabla</mat-label>
+            <input matInput [formControl]="e.tableName" [placeholder]="names?.tableName ?? ''"
+              data-testid="entity-table" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>Ruta REST</mat-label>
+            <input matInput [formControl]="e.resourcePath" [placeholder]="names?.resourcePath ?? ''"
+              data-testid="entity-path" />
+          </mat-form-field>
+
+          @if (generation() === 'SEQUENCE') {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>Secuencia</mat-label>
+            <input matInput [formControl]="e.sequenceName" [placeholder]="names?.sequenceName ?? ''"
+              data-testid="entity-sequence" />
+          </mat-form-field>
+          }
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Hereda de</mat-label>
+            <mat-select [formControl]="e.superclassId" data-testid="entity-superclass">
+              <mat-option [value]="null">Ninguna</mat-option>
+              @for (option of superclassOptions(); track option.id) {
+              <mat-option [value]="option.id">{{ option.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <p class="hint">Los valores en gris se derivan del nombre; escriba otro para reemplazarlos.</p>
+      </mat-tab>
+
+      <mat-tab [label]="'Atributos (' + e.attributes.length + ')'">
+        <div class="tab">
+          <app-attribute-table [attributes]="e.attributes" [columns]="selectedColumns()" [issues]="allIssues()" />
+        </div>
+      </mat-tab>
+
+      <mat-tab [label]="'Relaciones (' + e.relations.length + ')'">
+        <div class="tab">
+          <app-relation-table [relations]="e.relations" [ownerId]="e.id.value" [entities]="entityItems()"
+            [mappings]="allMappings()" [incoming]="incoming()" [issues]="allIssues()" />
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    } @else if (selectedSuperclass(); as superclass) {
+    @let s = superclass.controls;
+    <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms" [selectedIndex]="selectedTab()"
+      (selectedIndexChange)="selectedTab.set($event)">
+      <mat-tab label="General">
+        <div class="fields tab">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Nombre</mat-label>
+            <input matInput [formControl]="s.name" placeholder="Auditable" data-testid="superclass-name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Hereda de</mat-label>
+            <mat-select [formControl]="s.parentId" data-testid="superclass-parent">
+              <mat-option [value]="null">Ninguna (raíz)</mat-option>
+              @for (option of parentOptions(); track option.id) {
+              <mat-option [value]="option.id">{{ option.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <p class="hint">Se genera como clase abstracta con <code>&#64;MappedSuperclass</code>, sin tabla propia.</p>
+      </mat-tab>
+
+      <mat-tab [label]="'Atributos (' + s.attributes.length + ')'">
+        <div class="tab">
+          <app-attribute-table [attributes]="s.attributes" [columns]="selectedColumns()" [issues]="allIssues()" />
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    } @else {
+    <p class="empty" data-testid="detail-empty">Elija una superclase o entidad de la lista, o cree una nueva.</p>
+    }
+
+    @if (selectedIssues().length > 0) {
+    <ul class="issues" data-testid="selected-issues">
+      @for (issue of selectedIssues(); track $index) {
+      <li class="issue" [class.warning]="issue.severity === 'WARNING'">{{ issue.message }}</li>
+      }
+    </ul>
+    }
+  </section>
+</div>
+
+@if (allIssues().length > 0) {
+<section class="problems" data-testid="problems">
+  <h3 class="title">
+    Problemas: {{ errorCount() }} {{ errorCount() === 1 ? 'error' : 'errores' }} ·
+    {{ warningCount() }} {{ warningCount() === 1 ? 'aviso' : 'avisos' }}
+  </h3>
+  <ul class="problem-list">
+    @for (issue of allIssues(); track $index) {
+    <li>
+      @if (ownerOf(issue)) {
+      <button type="button" class="problem" [class.warning]="issue.severity === 'WARNING'" (click)="goTo(issue)"
+        [attr.data-testid]="'problem-' + $index">
+        {{ issue.severity === 'ERROR' ? '⛔' : '⚠' }} {{ issue.location }}: {{ issue.message }}
+      </button>
+      } @else {
+      <span class="problem" [class.warning]="issue.severity === 'WARNING'">
+        {{ issue.severity === 'ERROR' ? '⛔' : '⚠' }} {{ issue.location }}: {{ issue.message }}
+      </span>
+      }
+    </li>
+    }
+  </ul>
+</section>
+}

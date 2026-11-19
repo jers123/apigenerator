@@ -1,0 +1,127 @@
+<div class="loading">
+  @if (catalog.isLoading() || resolution.isLoading() || versions.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (errorMessage(); as message) {
+<p class="error" role="alert" data-testid="error">{{ message }}</p>
+}
+
+<p class="info" role="note" data-testid="dependencies-info">
+  Proyecto {{ buildTool() === 'MAVEN' ? 'Maven' : 'Gradle' }}{{ reactive() ? ' reactivo' : '' }}. Los drivers y las
+  librerías de seguridad se marcan solos según lo elegido en «Bases de datos» y «Seguridad»; para cambiarlos, vuelve a
+  esos pasos.
+</p>
+
+<div class="layout">
+  <div>
+    @for (section of sections(); track section.category) {
+    <section class="section">
+      <h3 class="section-title">{{ section.label }}</h3>
+      <div class="groups">
+        @for (group of section.groups; track group.id) {
+        <article class="group" [class.group--selected]="isChecked(group)" [class.group--locked]="isLocked(group)"
+          [attr.data-testid]="'group-' + group.id">
+          <mat-checkbox [checked]="isChecked(group)" [disabled]="isLocked(group)"
+            (change)="toggleGroup(group.id, $event.checked)">
+            {{ group.name }}
+          </mat-checkbox>
+          @if (lockReason(group); as reason) {
+          <p class="lock-reason">{{ reason }}</p>
+          }
+          <ul class="artifacts">
+            @for (dependency of visibleDependencies(group); track dependency.artifactId) {
+            <li [title]="dependency.groupId + ':' + dependency.artifactId">
+              {{ dependency.name }}
+              @if (dependency.reactive) {
+              <span class="tag">reactivo</span>
+              }
+            </li>
+            }
+          </ul>
+        </article>
+        }
+      </div>
+    </section>
+    }
+
+    @if (securityArtifacts().length > 0) {
+    @let securityChosen = securityDependencies().length > 0;
+    <section class="section" data-testid="security-section">
+      <h3 class="section-title">Seguridad</h3>
+      <div class="groups">
+        <article class="group group--locked" [class.group--selected]="securityChosen" data-testid="group-security">
+          <mat-checkbox [checked]="securityChosen" [disabled]="true">Spring Security</mat-checkbox>
+          <p class="lock-reason">
+            {{ securityChosen ? 'Incluido por la seguridad elegida en «Seguridad».' : 'Se agrega al elegir un método en «Seguridad».' }}
+          </p>
+          <ul class="artifacts">
+            @for (dependency of securityDependencies(); track dependency.groupId + ':' + dependency.artifactId) {
+            <li [title]="dependency.groupId + ':' + dependency.artifactId">{{ dependency.name }}</li>
+            }
+          </ul>
+        </article>
+      </div>
+    </section>
+    }
+  </div>
+
+  <aside class="summary" aria-label="Dependencias del proyecto" data-testid="summary">
+    <h3 class="section-title">Dependencias del proyecto</h3>
+    <ol class="summary-list">
+      @for (dependency of resolvedDependencies(); track dependency.groupId + ':' + dependency.artifactId) {
+      <li>
+        <span class="summary-name">{{ dependency.name }}</span>
+        <span class="summary-meta">
+          {{ dependency.groupId }}:{{ dependency.artifactId }} · {{ scopeOf(dependency) }}
+        </span>
+
+        @if (dependency.followsSpringBoot) {
+        <span class="summary-version" [attr.data-testid]="'version-' + dependency.artifactId">
+          = Spring Boot {{ springBootVersion() ?? '' }}
+        </span>
+        } @else if (versionsOf(dependency); as info) {
+        @if (info.available) {
+        <mat-form-field class="version-field" appearance="outline" subscriptSizing="dynamic">
+          <mat-select [value]="versionOf(dependency)" placeholder="Gestionada por Spring Boot"
+            (selectionChange)="chooseVersion(dependency, $event.value)" [attr.aria-label]="'Versión de ' + dependency.name"
+            [attr.data-testid]="'version-' + dependency.artifactId">
+            @if (dependency.version === null) {
+            <mat-option [value]="null">Gestionada por Spring Boot</mat-option>
+            }
+            @for (version of versionOptions(dependency, info); track version) {
+            <mat-option [value]="version">{{ version }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        } @else {
+        <span class="summary-version summary-version--warn" [attr.data-testid]="'version-' + dependency.artifactId">
+          Sin conexión con Maven Central · {{ dependency.version ? 'se usará ' + dependency.version : 'gestionada por Spring Boot' }}
+        </span>
+        }
+        } @else {
+        <span class="summary-version summary-version--muted">consultando versiones…</span>
+        }
+      </li>
+      }
+    </ol>
+
+    @if (securityDependencies().length > 0) {
+    <h3 class="section-title">Del paso Seguridad</h3>
+    <ol class="summary-list" data-testid="security-dependencies">
+      @for (dependency of securityDependencies(); track dependency.groupId + ':' + dependency.artifactId) {
+      <li>
+        <span class="summary-name">{{ dependency.name }}</span>
+        <span class="summary-meta">
+          {{ dependency.groupId }}:{{ dependency.artifactId }} · {{ scopeOf(dependency) }}
+        </span>
+        <span class="summary-version">
+          {{ dependency.version ?? '= Spring Boot ' + (springBootVersion() ?? '') }}
+        </span>
+      </li>
+      }
+    </ol>
+    }
+  </aside>
+</div>

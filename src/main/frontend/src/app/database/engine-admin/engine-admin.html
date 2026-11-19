@@ -1,0 +1,115 @@
+<div class="layout">
+    <nav class="list" aria-label="Motores de base de datos">
+        <button matButton="filled" type="button" (click)="startCreate()" data-testid="new-engine">Nuevo motor</button>
+        @for (engine of engineList(); track engine.id) {
+        <button matButton type="button" class="item" [class.item--active]="isEditing(engine.id)" (click)="edit(engine)"
+            [attr.data-testid]="'edit-' + engine.id">
+            <span class="item-text">
+                {{ engine.label }}
+                <span class="meta">{{ engine.exampleUrl }}</span>
+            </span>
+        </button>
+        }
+    </nav>
+
+    <section class="detail">
+        @if (loadError(); as message) {
+        <p class="error" role="alert" data-testid="load-error">{{ message }}</p>
+        }
+
+        @if (form(); as engineForm) {
+        <h2 class="title">{{ isEdit() ? 'Editar motor' : 'Nuevo motor' }}</h2>
+
+        <div class="fields">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Id</mat-label>
+                <input matInput [formControl]="engineForm.controls.id" [readonly]="isEdit()" data-testid="engine-id" />
+                @if (engineForm.controls.id.hasError('pattern')) {
+                <mat-error>Use minúsculas, números y guiones, por ejemplo mariadb</mat-error>
+                } @else {
+                <mat-error>Obligatorio</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Nombre</mat-label>
+                <input matInput [formControl]="engineForm.controls.label" data-testid="engine-label" />
+                <mat-error>Obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Tipo de base</mat-label>
+                <mat-select [formControl]="engineForm.controls.kind" data-testid="engine-kind">
+                    @for (kind of kinds; track kind.value) {
+                    <mat-option [value]="kind.value" [disabled]="!kind.supported">
+                        {{ kind.label }}{{ kind.supported ? '' : ' (próximamente)' }}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-checkbox [formControl]="engineForm.controls.supportsSequences" data-testid="engine-sequences">
+                Soporta secuencias
+            </mat-checkbox>
+
+            <mat-checkbox [formControl]="engineForm.controls.embedded" data-testid="engine-embedded">
+                Embebida (sin servidor)
+            </mat-checkbox>
+
+            @if (!engineForm.controls.embedded.value) {
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Puerto</mat-label>
+                <input matInput type="number" [formControl]="engineForm.controls.defaultPort"
+                    data-testid="engine-port" />
+                <mat-error>Entre 1 y 65535</mat-error>
+            </mat-form-field>
+            }
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Usuario por defecto</mat-label>
+                <input matInput [formControl]="engineForm.controls.defaultUsername" data-testid="engine-username" />
+                <mat-error>Obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide">
+                <mat-label>Plantilla JDBC</mat-label>
+                <input matInput [formControl]="engineForm.controls.jdbcUrlTemplate" data-testid="engine-template" />
+                <mat-hint>{{ templateHint }}</mat-hint>
+                <mat-error>Obligatoria</mat-error>
+            </mat-form-field>
+        </div>
+
+        <p class="hint">
+            Las secuencias permiten usar la estrategia de id «Secuencia» en el modelo. PostgreSQL, Oracle, SQL Server,
+            MariaDB y H2 las tienen; MySQL no.
+        </p>
+
+        @if (engineForm.hasError('portRequired')) {
+        <p class="field-error">Un motor con servidor necesita puerto.</p>
+        }
+
+        <h3 class="subtitle">Driver</h3>
+        <app-group-editor [form]="engineForm.controls.driverGroup" [categories]="databaseCategories"
+            [idLocked]="isEdit()" />
+
+        @if (saveError(); as message) {
+        <p class="error" role="alert" data-testid="save-error">{{ message }}</p>
+        }
+        @if (notice(); as message) {
+        <p class="notice" role="status" data-testid="notice">{{ message }}</p>
+        }
+
+        <div class="actions">
+            <button matButton="filled" type="button" (click)="save(engineForm)" [disabled]="saving()"
+                data-testid="save">
+                Guardar
+            </button>
+            <button matButton type="button" (click)="cancel()">Cancelar</button>
+        </div>
+        } @else if (editing()) {
+        <mat-progress-bar mode="indeterminate" />
+        } @else {
+        <p class="hint">Elige un motor de la lista o crea uno nuevo.</p>
+        }
+    </section>
+</div>

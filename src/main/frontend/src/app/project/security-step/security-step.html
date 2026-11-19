@@ -1,0 +1,148 @@
+<div class="loading">
+  @if (mechanisms.isLoading() || providers.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (loadError(); as message) {
+<p class="error" role="alert" data-testid="security-load-error">{{ message }}</p>
+}
+
+<p class="info" role="note" data-testid="security-info">
+  Por defecto la API es pública y no hay inicio de sesión. Se muestran todas las opciones: las que no se pueden
+  combinar con lo elegido, o que no funcionan en reactivo, aparecen deshabilitadas con el motivo.
+</p>
+
+@if (notice(); as message) {
+<p class="notice" role="status" data-testid="security-notice">{{ message }}</p>
+}
+
+<section class="section">
+  <h3 class="title">Autenticación de la API</h3>
+  <mat-radio-group class="options" [value]="apiId() ?? ''" (change)="chooseApi($event.value)"
+    aria-label="Autenticación de la API">
+    <mat-radio-button value="" data-testid="api-none">
+      <span class="option-label">Ninguna</span>
+      <span class="option-description">La API es pública.</span>
+    </mat-radio-button>
+    @for (mechanism of apiOptions(); track mechanism.id) {
+    <mat-radio-button [value]="mechanism.id" [disabled]="reasonFor(mechanism) !== null"
+      [attr.data-testid]="'api-' + mechanism.id">
+      <span class="option-label">{{ mechanism.name }}</span>
+      <span class="option-description">{{ mechanism.description }}</span>
+      @if (reasonFor(mechanism); as reason) {
+      <span class="reason">{{ reason }}</span>
+      }
+    </mat-radio-button>
+    }
+  </mat-radio-group>
+</section>
+
+<section class="section">
+  <h3 class="title">Inicio de sesión en navegador</h3>
+  <mat-radio-group class="options" [value]="loginId() ?? ''" (change)="chooseLogin($event.value)"
+    aria-label="Inicio de sesión en navegador">
+    <mat-radio-button value="" data-testid="login-none">
+      <span class="option-label">Sin inicio de sesión</span>
+      <span class="option-description">Solo API, sin páginas de login.</span>
+    </mat-radio-button>
+    @for (mechanism of loginOptions(); track mechanism.id) {
+    <mat-radio-button [value]="mechanism.id" [disabled]="reasonFor(mechanism) !== null"
+      [attr.data-testid]="'login-' + mechanism.id">
+      <span class="option-label">{{ mechanism.name }}</span>
+      <span class="option-description">{{ mechanism.description }}</span>
+      @if (reasonFor(mechanism); as reason) {
+      <span class="reason">{{ reason }}</span>
+      }
+    </mat-radio-button>
+    }
+  </mat-radio-group>
+</section>
+
+<section class="section">
+  <h3 class="title">Complementos</h3>
+  <div class="options">
+    @for (mechanism of addOnOptions(); track mechanism.id) {
+    <div class="option" [attr.data-testid]="'addon-' + mechanism.id">
+      <mat-checkbox [checked]="isAddOnChecked(mechanism.id)" [disabled]="reasonFor(mechanism) !== null"
+        (change)="toggleAddOn(mechanism.id, $event.checked)">
+        <span class="option-label">{{ mechanism.name }}</span>
+        <span class="option-description">{{ mechanism.description }}</span>
+      </mat-checkbox>
+      @if (reasonFor(mechanism); as reason) {
+      <span class="reason">{{ reason }}</span>
+      }
+    </div>
+    }
+  </div>
+</section>
+
+@if (needsIssuer()) {
+<section class="section" data-testid="issuer-section">
+  <h3 class="title">Emisor de tokens</h3>
+  <p class="hint">Lo necesitan: {{ issuerUsers() }}.</p>
+
+  <mat-radio-group class="options" [value]="issuerType() ?? ''" (change)="chooseIssuer($event.value)"
+    aria-label="Emisor de tokens">
+    <mat-radio-button value="OWN_SERVER" [disabled]="ownServerReason() !== null" data-testid="issuer-own">
+      <span class="option-label">Servidor de autorización propio</span>
+      <span class="option-description">
+        Se genera un segundo proyecto, <code>{{ artifactId() }}-auth-server</code>, en el puerto
+        {{ authorizationServerPort }}.
+      </span>
+      @if (ownServerReason(); as reason) {
+      <span class="reason">{{ reason }}</span>
+      }
+    </mat-radio-button>
+    <mat-radio-button value="PROVIDER" data-testid="issuer-provider">
+      <span class="option-label">Proveedor externo</span>
+      <span class="option-description">Keycloak, Auth0, Okta, Entra ID, Cognito, Google, GitHub…</span>
+    </mat-radio-button>
+  </mat-radio-group>
+
+  @if (issuerType() === 'PROVIDER') {
+  <div class="fields">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Proveedor</mat-label>
+      <mat-select [value]="providerId()" (selectionChange)="chooseProvider($event.value)"
+        data-testid="issuer-provider-select">
+        @for (provider of providerList(); track provider.id) {
+        <mat-option [value]="provider.id" [disabled]="providerReason(provider) !== null">
+          {{ provider.name }}
+          @if (providerReason(provider); as reason) {
+          <span class="option-reason">· {{ reason }}</span>
+          }
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (selectedProvider(); as provider) {
+    @for (parameter of provider.parameters; track parameter.key) {
+    @if (valueControl(parameter.key); as control) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ parameter.label }}</mat-label>
+      <input matInput [formControl]="control" [placeholder]="parameter.example"
+        [attr.data-testid]="'issuer-value-' + parameter.key" />
+      <mat-error>Obligatorio</mat-error>
+    </mat-form-field>
+    }
+    }
+    }
+  </div>
+
+  @if (selectedProvider(); as provider) {
+  <p class="hint">{{ provider.description }}</p>
+  @if (issuerPreview(); as url) {
+  <p class="preview" data-testid="issuer-uri">Emisor: <code>{{ url }}</code></p>
+  } @else {
+  <p class="hint">Spring Boot ya conoce a {{ provider.name }}: no necesita URL de emisor.</p>
+  }
+  }
+  }
+
+  <p class="hint">
+    El client-id y el secreto se escriben como variables de entorno en la configuración generada; nunca van en el ZIP.
+  </p>
+</section>
+}

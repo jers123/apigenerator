@@ -1,0 +1,102 @@
+@let list = rows();
+
+@if (list.length > 0) {
+<div class="row header" aria-hidden="true">
+  <span>Nombre</span>
+  <span>Destino</span>
+  <span>Cardinalidad</span>
+  <span>Oblig.</span>
+  <span>Inverso</span>
+  <span></span>
+</div>
+}
+
+@for (relation of list; track relation.controls.id.value; let i = $index) {
+@let r = relation.controls;
+@let id = r.id.value;
+@let mapping = mappingOf(id);
+@let manyToMany = r.cardinality.value === 'MANY_TO_MANY';
+<div class="relation" [class.has-errors]="hasErrors(id)" [attr.data-testid]="'relation-' + id">
+  <div class="row">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <input matInput [formControl]="r.name" placeholder="cliente" aria-label="Nombre"
+        [attr.data-testid]="'relation-name-' + id" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-select [formControl]="r.targetEntityId" aria-label="Entidad destino"
+        [attr.data-testid]="'relation-target-' + id">
+        @for (entity of entities(); track entity.id) {
+        <mat-option [value]="entity.id">{{ entity.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-select [formControl]="r.cardinality" (selectionChange)="changeCardinality(relation)"
+        aria-label="Cardinalidad" [attr.data-testid]="'relation-cardinality-' + id">
+        @for (cardinality of cardinalities; track cardinality.value) {
+        <mat-option [value]="cardinality.value">{{ cardinality.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox [checked]="r.required.value" [disabled]="toMany(r.cardinality.value)"
+      (change)="setRequired(relation, $event.checked)" aria-label="Obligatoria"
+      [attr.data-testid]="'relation-required-' + id" />
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <input matInput [formControl]="r.inverseName" placeholder="Unidireccional" aria-label="Inverso"
+        [attr.data-testid]="'relation-inverse-' + id" />
+    </mat-form-field>
+
+    <button matButton type="button" class="delete" (click)="remove(i)" [attr.aria-label]="'Borrar ' + r.name.value"
+      [attr.data-testid]="'relation-delete-' + id">✕</button>
+  </div>
+
+  <div class="mapping">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+      <mat-label>{{ manyToMany ? 'Columna de esta entidad' : 'Columna FK' }}</mat-label>
+      <input matInput [formControl]="r.joinColumn" [placeholder]="mapping?.joinColumn ?? ''"
+        [attr.data-testid]="'relation-column-' + id" />
+    </mat-form-field>
+
+    @if (manyToMany) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+      <mat-label>Tabla intermedia</mat-label>
+      <input matInput [formControl]="r.joinTable" [placeholder]="mapping?.joinTable ?? ''"
+        [attr.data-testid]="'relation-join-table-' + id" />
+    </mat-form-field>
+    @if (mapping?.inverseJoinColumn; as other) {
+    <p class="hint" [attr.data-testid]="'relation-other-column-' + id">Otra columna: <code>{{ other }}</code></p>
+    }
+    }
+
+    @if (foreignKeyHint(id); as hint) {
+    <p class="hint" [attr.data-testid]="'relation-fk-hint-' + id">{{ hint }}</p>
+    }
+  </div>
+
+  @for (issue of issuesOf(id); track $index) {
+  <p class="issue" [class.warning]="issue.severity === 'WARNING'">{{ issue.message }}</p>
+  }
+</div>
+} @empty {
+<p class="hint" data-testid="no-relations">No declara relaciones.</p>
+}
+
+<button matButton type="button" (click)="add()" [disabled]="entities().length === 0" data-testid="add-relation">
+  + Relación
+</button>
+
+@if (incoming().length > 0) {
+<section class="incoming" data-testid="incoming">
+  <h4 class="subtitle">Llegan desde otras entidades</h4>
+  <ul class="incoming-list">
+    @for (item of incoming(); track item.relationId) {
+    <li>{{ item.sourceName }} › {{ item.relationName }} → <strong>{{ item.inverseName }}</strong> ({{ cardinalityLabel(item.cardinality) }})</li>
+    }
+  </ul>
+  <p class="hint">Se editan en la relación de la entidad que la declara.</p>
+</section>
+}

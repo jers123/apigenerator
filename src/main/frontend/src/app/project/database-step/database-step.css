@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+.loading {
+  height: 4px;
+  margin-bottom: 8px;
+}
+
+.section {
+  margin-top: 16px;
+  padding: 8px 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+}
+
+.hint {
+  margin: 4px 0 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.info,
+.error {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font: var(--mat-sys-body-small);
+}
+
+.info {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.error {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}

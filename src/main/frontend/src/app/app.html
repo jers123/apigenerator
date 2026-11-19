@@ -1,0 +1,13 @@
+<mat-toolbar class="toolbar">
+  <span class="brand">API Generator</span>
+  <nav class="nav" aria-label="Secciones">
+    <a matButton routerLink="/project" routerLinkActive="nav-link--active" class="nav-link">Nuevo proyecto</a>
+    <a matButton routerLink="/databases" routerLinkActive="nav-link--active" class="nav-link">Bases de datos</a>
+    <a matButton routerLink="/groups" routerLinkActive="nav-link--active" class="nav-link">Grupos</a>
+    <a matButton routerLink="/security" routerLinkActive="nav-link--active" class="nav-link">Seguridad</a>
+  </nav>
+</mat-toolbar>
+
+<main class="content">
+  <router-outlet />
+</main>

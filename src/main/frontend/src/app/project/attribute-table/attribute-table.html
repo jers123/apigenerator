@@ -1,0 +1,125 @@
+@let list = rows();
+
+@if (list.length > 0) {
+<div class="row header" aria-hidden="true">
+  <span>Nombre</span>
+  <span>Tipo</span>
+  <span>Oblig.</span>
+  <span>Único</span>
+  <span>Columna</span>
+  <span></span>
+</div>
+}
+
+@for (attribute of list; track attribute.controls.id.value; let i = $index) {
+@let a = attribute.controls;
+@let id = a.id.value;
+<div class="attribute" [class.has-errors]="hasErrors(id)" [attr.data-testid]="'attribute-' + id">
+  <div class="row">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <input matInput [formControl]="a.name" placeholder="fechaNacimiento" aria-label="Nombre"
+        [attr.data-testid]="'attribute-name-' + id" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-select [formControl]="a.type" (selectionChange)="changeType(attribute)" aria-label="Tipo"
+        [attr.data-testid]="'attribute-type-' + id">
+        @for (type of types; track type.value) {
+        <mat-option [value]="type.value">{{ type.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox [formControl]="a.required" aria-label="Obligatorio"
+      [attr.data-testid]="'attribute-required-' + id" />
+
+    <mat-checkbox [formControl]="a.unique" aria-label="Único" [attr.data-testid]="'attribute-unique-' + id" />
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <input matInput [formControl]="a.columnName" [placeholder]="placeholderOf(id)" aria-label="Columna"
+        [attr.data-testid]="'attribute-column-' + id" />
+    </mat-form-field>
+
+    <div class="row-actions">
+      <button matButton type="button" (click)="toggle(id)" [attr.aria-expanded]="expanded() === id"
+        [attr.data-testid]="'attribute-toggle-' + id">
+        Restricciones
+      </button>
+      <button matButton type="button" class="delete" (click)="remove(i)" [attr.aria-label]="'Borrar ' + a.name.value"
+        [attr.data-testid]="'attribute-delete-' + id">✕</button>
+    </div>
+  </div>
+
+  @if (summaryOf(attribute); as summary) {
+  <p class="summary" [attr.data-testid]="'attribute-summary-' + id">{{ summary }}</p>
+  }
+
+  @if (expanded() === id) {
+  @let rules = rulesOf(attribute);
+  @let c = a.constraints.controls;
+  <div class="constraints" [attr.data-testid]="'attribute-constraints-' + id">
+    @if (rules.text) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Longitud mínima</mat-label>
+      <input matInput type="number" min="0" [formControl]="c.minLength" data-testid="min-length" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Longitud máxima</mat-label>
+      <input matInput type="number" min="1" [formControl]="c.maxLength" data-testid="max-length" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide">
+      <mat-label>Patrón (expresión regular)</mat-label>
+      <input matInput [formControl]="c.pattern" placeholder="[A-Z]{3}-[0-9]+" data-testid="pattern" />
+    </mat-form-field>
+    <mat-checkbox [formControl]="c.email" data-testid="email">Debe ser un correo</mat-checkbox>
+    }
+
+    @if (rules.range) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Mínimo</mat-label>
+      <input matInput type="number" [formControl]="c.min" data-testid="min" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Máximo</mat-label>
+      <input matInput type="number" [formControl]="c.max" data-testid="max" />
+    </mat-form-field>
+    }
+
+    @if (rules.digits) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Dígitos enteros</mat-label>
+      <input matInput type="number" min="1" [formControl]="c.integerDigits" data-testid="integer-digits" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Dígitos decimales</mat-label>
+      <input matInput type="number" min="0" [formControl]="c.fractionDigits" data-testid="fraction-digits" />
+    </mat-form-field>
+    }
+
+    @if (rules.temporal) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Momento</mat-label>
+      <mat-select [formControl]="c.temporal" data-testid="temporal">
+        <mat-option [value]="null">Sin restricción</mat-option>
+        @for (rule of temporalRules; track rule.value) {
+        <mat-option [value]="rule.value">{{ rule.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    }
+
+    @if (!acceptsAny(rules)) {
+    <p class="hint" data-testid="no-constraints">Este tipo no admite restricciones; solo obligatorio y único.</p>
+    }
+  </div>
+  }
+
+  @for (issue of issuesOf(id); track $index) {
+  <p class="issue" [class.warning]="issue.severity === 'WARNING'">{{ issue.message }}</p>
+  }
+</div>
+} @empty {
+<p class="hint" data-testid="no-attributes">Sin atributos.</p>
+}
+
+<button matButton type="button" (click)="add()" data-testid="add-attribute">+ Atributo</button>

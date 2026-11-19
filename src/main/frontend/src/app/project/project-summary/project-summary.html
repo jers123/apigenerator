@@ -1,0 +1,166 @@
+<div class="loading">
+  @if (plan.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (!request()) {
+<p class="hint" data-testid="summary-empty">El resumen se calcula al llegar a este paso.</p>
+}
+
+@if (errorMessage(); as message) {
+<p class="error" role="alert" data-testid="summary-error">
+  {{ message }} Vuelve al paso correspondiente para corregirlo.
+</p>
+}
+
+@if (request(); as sent) {
+@if (plan.hasValue()) {
+@let result = plan.value();
+<div class="cards">
+  <section class="card" data-testid="summary-project">
+    <h3 class="title">Proyecto</h3>
+    <dl class="facts">
+      <dt>Coordenadas</dt>
+      <dd><code>{{ result.groupId }}:{{ result.artifactId }}</code></dd>
+      <dt>Paquete base</dt>
+      <dd><code>{{ result.basePackage }}</code></dd>
+      <dt>Spring Boot</dt>
+      <dd>{{ result.springBootVersion }}</dd>
+      <dt>Build</dt>
+      <dd>
+        {{ sent.build.buildTool === 'MAVEN' ? 'Maven' : 'Gradle' }} · Java {{ sent.build.javaVersion }} ·
+        {{ sent.build.packaging }} · puerto {{ sent.build.serverPort }}{{ sent.build.reactive ? ' · reactivo' : '' }}
+      </dd>
+    </dl>
+  </section>
+
+  <section class="card" data-testid="summary-architecture">
+    <h3 class="title">Arquitectura</h3>
+    <dl class="facts">
+      <dt>Estilo</dt>
+      <dd>{{ result.architecture.style }}</dd>
+      <dt>Organización</dt>
+      <dd>{{ result.architecture.layout === 'MULTI_MODULE' ? 'Varios módulos' : 'Un solo módulo' }}</dd>
+    </dl>
+    <ul class="chips">
+      @for (pattern of result.architecture.patterns; track pattern) {
+      <li class="chip">{{ pattern }}</li>
+      }
+    </ul>
+  </section>
+
+  <section class="card" data-testid="summary-data">
+    <h3 class="title">Datos</h3>
+    <dl class="facts">
+      <dt>Al ejecutar</dt>
+      <dd>{{ persistenceLabels[result.persistence] }}</dd>
+      @if (result.database; as database) {
+      <dt>URL</dt>
+      <dd><code>{{ database.jdbcUrl }}</code> ({{ database.username }})</dd>
+      }
+      <dt>En pruebas</dt>
+      <dd>{{ persistenceLabels[result.testPersistence] }}</dd>
+      @if (result.testDatabase; as testDatabase) {
+      <dt>URL</dt>
+      <dd><code>{{ testDatabase.jdbcUrl }}</code> ({{ testDatabase.username }})</dd>
+      }
+    </dl>
+  </section>
+
+  @if (modelSummary(); as model) {
+  <section class="card" data-testid="summary-model">
+    <h3 class="title">Modelo</h3>
+    @if (model.entities === 0) {
+    <p class="hint">Sin entidades: el proyecto se genera sin CRUD.</p>
+    } @else {
+    <dl class="facts">
+      <dt>Entidades</dt>
+      <dd>{{ model.entities }} · {{ model.attributes }} atributos · {{ model.relations }} relaciones</dd>
+      @if (model.superclasses > 0) {
+      <dt>Superclases</dt>
+      <dd>{{ model.superclasses }}</dd>
+      }
+      <dt>Id</dt>
+      <dd>{{ model.id }} · {{ model.placement }}</dd>
+      <dt>Auditoría</dt>
+      <dd>{{ model.audit ?? 'No' }}</dd>
+    </dl>
+    }
+  </section>
+  }
+
+  <section class="card" data-testid="summary-security">
+    <h3 class="title">Seguridad</h3>
+    @let security = result.security;
+    <dl class="facts">
+      <dt>API</dt>
+      <dd>{{ security.apiAuthentication ?? 'Pública' }}</dd>
+      <dt>Inicio de sesión</dt>
+      <dd>{{ security.browserLogin ?? 'Sin inicio de sesión' }}</dd>
+      @if (security.addOns.length > 0) {
+      <dt>Complementos</dt>
+      <dd>{{ security.addOns.join(', ') }}</dd>
+      }
+      @if (security.issuerType) {
+      <dt>Emisor</dt>
+      <dd>
+        {{ security.issuerType === 'OWN_SERVER' ? 'Servidor propio' : security.providerName }}
+        @if (security.issuerUri) {
+        · <code>{{ security.issuerUri }}</code>
+        }
+      </dd>
+      }
+      @if (security.managesUsers) {
+      <dt>Usuarios</dt>
+      <dd>Los guarda el proyecto</dd>
+      }
+    </dl>
+    @if (security.authorizationServerArtifactId; as authServer) {
+    <p class="second-project" data-testid="summary-auth-server">
+      Se generará un segundo proyecto: <code>{{ authServer }}</code> en el puerto {{ security.authorizationServerPort }}.
+    </p>
+    }
+  </section>
+
+  <section class="card" data-testid="summary-options">
+    <h3 class="title">Opciones</h3>
+    <dl class="facts">
+      <dt>Javadoc</dt>
+      <dd>{{ result.options.javadoc ? 'Sí, en español' : 'No' }}</dd>
+      <dt>Pruebas</dt>
+      <dd>{{ result.options.unitTests ? 'Sí' : 'No' }}</dd>
+      <dt>Configuración</dt>
+      <dd><code>{{ configFiles[result.options.configFormat] }}</code></dd>
+    </dl>
+  </section>
+</div>
+
+<section class="card dependencies" data-testid="summary-dependencies">
+  <h3 class="title">Dependencias ({{ result.dependencies.length }})</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Artefacto</th>
+        <th>Versión</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (dependency of result.dependencies; track dependency.groupId + ':' + dependency.artifactId) {
+      <tr>
+        <td>{{ dependency.name }}</td>
+        <td><code>{{ dependency.groupId }}:{{ dependency.artifactId }}</code></td>
+        <td>{{ dependency.managed ? 'gestionada' : dependency.version }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</section>
+
+<div class="generate">
+  <button matButton="filled" type="button" disabled data-testid="generate">Generar proyecto (ZIP)</button>
+  <span class="hint">Disponible cuando esté listo el generador (M9 y M10).</span>
+</div>
+}
+}

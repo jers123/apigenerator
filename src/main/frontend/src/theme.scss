@@ -1,0 +1,25 @@
+// ============================================================
+// Tema de Angular Material para API Generator.
+// Es el ÚNICO archivo Sass del proyecto: los componentes usan
+// CSS puro y leen el tema con variables var(--mat-sys-*).
+// ============================================================
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    // Fuente del sistema: no descarga nada de Internet y carga al instante.
+    typography: (
+      plain-family: system-ui,
+      brand-family: system-ui,
+    ),
+    // 0 = tamaño estándar de Material; -5 = lo más compacto.
+    // -3 deja inputs y botones con apariencia de herramienta de escritorio.
+    density: -3,
+  ));
+}

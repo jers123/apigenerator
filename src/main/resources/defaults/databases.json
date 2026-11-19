@@ -1,0 +1,73 @@
+{
+  "engines" : [ {
+    "id" : "h2",
+    "label" : "H2",
+    "driverGroupId" : "h2-database",
+    "embedded" : true,
+    "defaultPort" : null,
+    "defaultUsername" : "sa",
+    "jdbcUrlTemplate" : "jdbc:h2:mem:{database};DB_CLOSE_DELAY=-1",
+    "kind" : "RELATIONAL",
+    "supportsSequences" : true
+  }, {
+    "id" : "ibm-db2",
+    "label" : "IBM DB2",
+    "driverGroupId" : "ibm-db2-driver",
+    "embedded" : false,
+    "defaultPort" : 50000,
+    "defaultUsername" : "db2inst1",
+    "jdbcUrlTemplate" : "jdbc:db2://{host}:{port}/{database}",
+    "kind" : "RELATIONAL",
+    "supportsSequences" : true
+  }, {
+    "id" : "mariadb",
+    "label" : "MariaDB",
+    "driverGroupId" : "mariadb-driver",
+    "embedded" : false,
+    "defaultPort" : 3306,
+    "defaultUsername" : "root",
+    "jdbcUrlTemplate" : "jdbc:mariadb://{host}:{port}/{database}",
+    "kind" : "RELATIONAL",
+    "supportsSequences" : true
+  }, {
+    "id" : "mysql",
+    "label" : "MySQL",
+    "driverGroupId" : "mysql-driver",
+    "embedded" : false,
+    "defaultPort" : 3306,
+    "defaultUsername" : "root",
+    "jdbcUrlTemplate" : "jdbc:mysql://{host}:{port}/{database}",
+    "kind" : "RELATIONAL",
+    "supportsSequences" : false
+  }, {
+    "id" : "oracle",
+    "label" : "Oracle",
+    "driverGroupId" : "oracle-driver",
+    "embedded" : false,
+    "defaultPort" : 1521,
+    "defaultUsername" : "SYSTEM",
+    "jdbcUrlTemplate" : "jdbc:oracle:thin:@//{host}:{port}/{database}",
+    "kind" : "RELATIONAL",
+    "supportsSequences" : true
+  }, {
+    "id" : "postgresql",
+    "label" : "PostgreSQL",
+    "driverGroupId" : "postgresql-driver",
+    "embedded" : false,
+    "defaultPort" : 5432,
+    "defaultUsername" : "postgres",
+    "jdbcUrlTemplate" : "jdbc:postgresql://{host}:{port}/{database}",
+    "kind" : "RELATIONAL",
+    "supportsSequences" : true
+  }, {
+    "id" : "sql-server",
+    "label" : "SQL Server",
+    "driverGroupId" : "ms-sql-server-driver",
+    "embedded" : false,
+    "defaultPort" : 1433,
+    "defaultUsername" : "sa",
+    "jdbcUrlTemplate" : "jdbc:sqlserver://{host}:{port};databaseName={database};encrypt=true;trustServerCertificate=true",
+    "kind" : "RELATIONAL",
+    "supportsSequences" : true
+  } ]
+}
